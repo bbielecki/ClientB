@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="190.0" prefWidth="248.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.TimerController">
+   <children>
+      <ComboBox fx:id="timeComboBox" layoutX="49.0" layoutY="83.0" onAction="#getChosenPeriod" prefWidth="150.0" promptText="chose period" />
+   </children>
+</AnchorPane>
