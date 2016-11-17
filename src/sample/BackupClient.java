@@ -3,12 +3,14 @@ import java.io.*;
 import java.rmi.*;
 import com.healthmarketscience.rmiio.*;
 //import org.apache.commons.logging.*;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import sample.ClientInterface;
 
 import java.io.File.*;
 import java.util.concurrent.TimeUnit;
 
-public class BackupClient implements ClientInterface, Serializable {
+public class BackupClient implements Serializable {
 
     public static FileInterface server;
 
@@ -69,10 +71,10 @@ public class BackupClient implements ClientInterface, Serializable {
         }
     }
 
-    public static void send(String filepath) throws RemoteException{
+    public static void send(FileInterface server, String filepath, String filename, String extension, long lastModified) throws RemoteException{
         try{
             SimpleRemoteInputStream istream = new SimpleRemoteInputStream(new FileInputStream(filepath));
-            server.sendFile(istream.export());
+            server.sendFile(istream.export(), filename, extension, lastModified);
             istream.close();
         }
         catch (Exception e){
@@ -88,6 +90,28 @@ public class BackupClient implements ClientInterface, Serializable {
         } catch (Exception e) {
             return "";
         }
+    }
+
+    public static ObservableList<ServerTable> getTable(RemoteInputStream ris) throws IOException {
+        InputStream in;
+        ObjectInputStream ois = null;
+        ObservableList<ServerTable> list = FXCollections.observableArrayList();
+        try {
+            in = RemoteInputStreamClient.wrap(ris);
+            ois = new ObjectInputStream(in);
+            Object ob = ois.readObject();
+            ois.close();
+            String[] srv = (String[]) ob;
+            for(int i = 0; i<srv.length; i = i+4){
+                list.addAll(new ServerTable(srv[i],srv[i+1],srv[i+2],srv[i+3]));
+
+            }
+
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage() + " Wyjątek");
+        }
+        return list;
     }
 
     /*

@@ -35,7 +35,7 @@ public class BackupTimer implements Runnable{
 
                 for(File f : periodFiles) {
                     try {
-                        BackupClient.send(f.getPath());
+                        BackupClient.send(BackupClient.server,f.getPath(),f.getPath(),BackupClient.getFileExtension(f),f.lastModified());
                     }
                     catch (RemoteException re){
                         re.getMessage();

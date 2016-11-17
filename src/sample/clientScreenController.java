@@ -1,13 +1,14 @@
 package sample;
 
+import com.healthmarketscience.rmiio.RemoteInputStream;
+import com.healthmarketscience.rmiio.RemoteInputStreamClient;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -15,13 +16,19 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
-import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URL;
+import java.rmi.RemoteException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -53,6 +60,8 @@ public class clientScreenController implements Initializable{
     @FXML
     private TableColumn<ServerTable,String> versionColumn;
 
+    @FXML
+    private ObservableList<ServerTable> data;
 
     @FXML
     private TextField port_textfield;
@@ -66,7 +75,6 @@ public class clientScreenController implements Initializable{
     @FXML private MenuItem periodic;
 
     private List<File> chosenFiles;
-    private List<File> periodicChosenFiles;
 
     public void handleUpload(ActionEvent event) throws IOException{
 
@@ -78,10 +86,11 @@ public class clientScreenController implements Initializable{
             if (chosenFiles != null) {
                 for (File f : chosenFiles) {
                     System.out.println(f.getName() + " " + f.lastModified());
-                  //  if (!(BackupClient.getServer().checkFileOnServer(f.getName(), f.lastModified()))) {
-                        BackupClient.send(f.getPath());
+                    Date dt = new Date(f.lastModified());
+                    if (!(BackupClient.getServer().checkFileOnServer(f.getName(), dt))) {
+                        BackupClient.send(BackupClient.getServer(), f.getPath(), f.getName(), BackupClient.getFileExtension(f), f.lastModified());
                         System.out.println("Przesłano plik: " + f.getName() + " " + "!");
-                  //  }
+                    }
 
                 }
             }
@@ -98,7 +107,7 @@ public class clientScreenController implements Initializable{
         return chosenFiles.remove(0);
     }
     public int getNumberOfChosenFiles(){return chosenFiles.size();}
-
+/*
     private int iNumber = 1;
 
     private final ObservableList<ServerTable> data = FXCollections.observableArrayList(
@@ -112,6 +121,17 @@ public class clientScreenController implements Initializable{
     public void addRow(int id, String filename, String extension, String lastModified, long size, String version){
         data.add(new ServerTable(iNumber++,filename,extension,lastModified,size,version));
         table.setItems(data);
+    }
+*/
+    public void showButtonAction(ActionEvent event){
+        try {
+            RemoteInputStream ris = BackupClient.getServer().tableStream();
+            data = BackupClient.getTable(ris);
+            table.getItems().clear();
+            table.getItems().addAll(data);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     @Override
@@ -128,7 +148,18 @@ public class clientScreenController implements Initializable{
         sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
         versionColumn.setCellValueFactory(new PropertyValueFactory<>("Version"));
 
-        table.setItems(data);
+        //table.setItems(data);
+
+        Platform.runLater(() -> {
+            try {
+                RemoteInputStream ris = BackupClient.getServer().tableStream();
+                data = BackupClient.getTable(ris);
+                table.getItems().clear();
+                table.getItems().addAll(data);
+            } catch (IOException e) {
+                System.out.println(e.getMessage());
+            }
+        });
     }
 
     public void periodicAction(ActionEvent event) throws IOException{
@@ -166,9 +197,6 @@ public class clientScreenController implements Initializable{
 
         if(a==1)
             chosenFiles = fileChooser.showOpenMultipleDialog(selectingFilesStage);
-        else
-            periodicChosenFiles = fileChooser.showOpenMultipleDialog(selectingFilesStage);
-
     }
 
 

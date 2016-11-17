@@ -9,40 +9,26 @@ import javafx.stage.Stage;
 import javax.swing.*;
 import javafx.event.*;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Date;
 
-public class ServerTable {
-    private final SimpleIntegerProperty id;
+public class ServerTable implements Serializable {
+    private static final long serialVersionUID = 20120731125400L;
     private final SimpleStringProperty FileName;
-    private final SimpleStringProperty extension;
     private final SimpleStringProperty lastModified;
-    private final SimpleLongProperty Size;
     private final SimpleStringProperty version;
+    private final SimpleStringProperty path;
 
-    public ServerTable(int id, String filename, String extension, String lastModified, long size, String version){
-        this.id = new SimpleIntegerProperty(id);
+    public ServerTable(String filename, String lastModified, String version, String path){
         this.FileName = new SimpleStringProperty(filename);
-        this.extension = new SimpleStringProperty(extension);
         this.lastModified = new SimpleStringProperty(lastModified);
-        this.Size = new SimpleLongProperty(size);
         this.version = new SimpleStringProperty(version);
+        this.path = new SimpleStringProperty(path);
 
-    }
-
-    public Integer getId(){
-        return id.get();
     }
 
     public String getFileName(){
         return FileName.get();
-    }
-
-    public String getExtension(){
-        return extension.get();
-    }
-
-    public Long getSize(){
-        return Size.get();
     }
 
     public String getVersion(){
@@ -51,15 +37,12 @@ public class ServerTable {
 
     public String getLastModified() {return lastModified.get();}
 
+    public String getPath() { return path.get();}
+
     public void setFileName(String v){ FileName.set(v);}
-    public void setExtension(String v){
-        extension.set(v);
-    }
-    public void setSize(Long v){
-        Size.set(v);
-    }
     public void setVersion(String v){
         version.set(v);
     }
     public void setLastModified(String v) {lastModified.set(v);}
+    public void setPath(String v) {path.set(v);}
 }
