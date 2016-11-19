@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="144.0" prefWidth="280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.clientScreenController">
+   <children>
+      <ProgressBar fx:id="progress" layoutX="33.0" layoutY="61.0" maxHeight="23.0" maxWidth="214.0" prefHeight="23.0" prefWidth="214.0" progress="0.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="33.0" AnchorPane.rightAnchor="33.0" AnchorPane.topAnchor="61.0">
+         <effect>
+            <Lighting>
+               <bumpInput>
+                  <Shadow color="#da1822e3" />
+               </bumpInput>
+               <light>
+                  <Light.Distant color="#e49090" />
+               </light>
+            </Lighting>
+         </effect>
+         <cursor>
+            <Cursor fx:constant="NW_RESIZE" />
+         </cursor></ProgressBar>
+   </children>
+</AnchorPane>

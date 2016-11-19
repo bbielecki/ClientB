@@ -60,6 +60,8 @@ public class clientScreenController implements Initializable{
     @FXML
     private TableColumn<ServerTable,String> versionColumn;
 
+    @FXML private TableColumn<ServerTable,String> pathColumn;
+
     @FXML
     private ObservableList<ServerTable> data;
 
@@ -68,28 +70,41 @@ public class clientScreenController implements Initializable{
 
     @FXML private MenuItem upload_menuitem;
     @FXML private MenuItem download_menuitem;
+    @FXML private Button show_button;
+    @FXML private Button get_button;
 
     @FXML private Menu file_menu;
     @FXML private Menu about_menu;
     @FXML private Menu info_menu;
     @FXML private MenuItem periodic;
 
+    @FXML ProgressBar progress;
+
     private List<File> chosenFiles;
 
     public void handleUpload(ActionEvent event) throws IOException{
 
         selectFiles(1);
+        createProgressBarWindow();
 
         System.out.println(chosenFiles);
 
         try {
             if (chosenFiles != null) {
                 for (File f : chosenFiles) {
+                    //controlProgress(f.length());
                     System.out.println(f.getName() + " " + f.lastModified());
                     Date dt = new Date(f.lastModified());
-                    if (!(BackupClient.getServer().checkFileOnServer(f.getName(), dt))) {
-                        BackupClient.send(BackupClient.getServer(), f.getPath(), f.getName(), BackupClient.getFileExtension(f), f.lastModified());
+                    if (!(BackupClient.server.checkFileOnServer(f.getName(), dt))) {
+                        controlProgress(f.length());
+                        BackupClient.fileSize=f.length();
+
+                        BackupClient.send(BackupClient.server, f.getPath(), f.getName(), BackupClient.getFileExtension(f), f.lastModified());
                         System.out.println("Przesłano plik: " + f.getName() + " " + "!");
+                    }
+                    else{
+                        //TODO okienko!
+                        System.out.println("Niestety plik już jest na serwerze!");
                     }
 
                 }
@@ -97,7 +112,7 @@ public class clientScreenController implements Initializable{
         } catch (Exception e) {
             System.out.println(e.getCause().getMessage());
         }
-
+        //pc.controlProgress(1);
     }
 
     public File getChosenFile(int index){
@@ -107,6 +122,23 @@ public class clientScreenController implements Initializable{
         return chosenFiles.remove(0);
     }
     public int getNumberOfChosenFiles(){return chosenFiles.size();}
+
+    public void getButtonAction(ActionEvent event) throws RemoteException {
+        //TODO jeśli cokolwiek zaznaczone
+        String pathToGet = table.getSelectionModel().getSelectedItem().getPath();
+        System.out.println(pathToGet);
+        String filename = table.getSelectionModel().getSelectedItem().getFileName() + "-v" +
+                table.getSelectionModel().getSelectedItem().getVersion();
+        System.out.println(filename);
+        try{
+            BackupClient.getFile(BackupClient.server.passAStream(pathToGet),filename);
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage());
+        }
+
+    }
+
 /*
     private int iNumber = 1;
 
@@ -125,7 +157,7 @@ public class clientScreenController implements Initializable{
 */
     public void showButtonAction(ActionEvent event){
         try {
-            RemoteInputStream ris = BackupClient.getServer().tableStream();
+            RemoteInputStream ris = BackupClient.server.tableStream();
             data = BackupClient.getTable(ris);
             table.getItems().clear();
             table.getItems().addAll(data);
@@ -141,18 +173,16 @@ public class clientScreenController implements Initializable{
         download_menuitem.setAccelerator(new KeyCodeCombination(KeyCode.D, KeyCombination.CONTROL_DOWN));
         periodic.setAccelerator(new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN));
 
-        idColumn.setCellValueFactory(new PropertyValueFactory<>("id"));
         filenameColumn.setCellValueFactory(new PropertyValueFactory<>("FileName"));
-        extensionColumn.setCellValueFactory(new PropertyValueFactory<>("Extension"));
         lastModifiedColumn.setCellValueFactory(new PropertyValueFactory<>("lastModified"));
-        sizeColumn.setCellValueFactory(new PropertyValueFactory<>("size"));
-        versionColumn.setCellValueFactory(new PropertyValueFactory<>("Version"));
+        versionColumn.setCellValueFactory(new PropertyValueFactory<>("version"));
+        pathColumn.setCellValueFactory(new PropertyValueFactory<>("path"));
 
         //table.setItems(data);
 
         Platform.runLater(() -> {
             try {
-                RemoteInputStream ris = BackupClient.getServer().tableStream();
+                RemoteInputStream ris = BackupClient.server.tableStream();
                 data = BackupClient.getTable(ris);
                 table.getItems().clear();
                 table.getItems().addAll(data);
@@ -197,6 +227,32 @@ public class clientScreenController implements Initializable{
 
         if(a==1)
             chosenFiles = fileChooser.showOpenMultipleDialog(selectingFilesStage);
+    }
+
+    public void createProgressBarWindow(){
+        try {
+            Parent timeScreen = FXMLLoader.load(getClass().getResource("progressBar.fxml"));
+            Scene timeScene = new Scene(timeScreen);
+            Stage timeStage = new Stage();
+            timeStage.setTitle("Upload progress");
+            timeStage.setScene(timeScene);
+            timeStage.show();
+
+
+
+        }
+        catch (Exception e){
+            e.getMessage();
+        }
+    }
+
+    public void controlProgress(long fsize){
+
+        ProgressBarThread PBT = new ProgressBarThread(fsize, progress);
+
+        Thread progressThread = new Thread(PBT);
+        progressThread.start();
+
     }
 
 

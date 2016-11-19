@@ -64,18 +64,18 @@
                         <Font size="19.0" />
                     </font>
                 </Label>
+                <Button fx:id="get_button" mnemonicParsing="false" onAction="#getButtonAction" text="Get" />
+                <Button fx:id="show_button" mnemonicParsing="false" onAction="#showButtonAction" prefHeight="25.0" prefWidth="67.0" text="Show" />
                 <ScrollPane prefHeight="246.0" prefWidth="593.0">
                     <content>
                         <VBox prefHeight="246.0" prefWidth="588.0">
                             <children>
                                 <TableView fx:id="table" editable="true" prefHeight="249.0" prefWidth="588.0">
                                     <columns>
-                                        <TableColumn fx:id="idColumn" prefWidth="26.0" text="id" />
                                         <TableColumn fx:id="filenameColumn" prefWidth="119.0" text="File name" />
-                                        <TableColumn fx:id="extensionColumn" prefWidth="67.0" text="Extension" />
                                         <TableColumn fx:id="lastModifiedColumn" prefWidth="105.0" text="Last modified" />
-                                        <TableColumn fx:id="sizeColumn" prefWidth="82.0" text="Size" />
                                         <TableColumn fx:id="versionColumn" prefWidth="67.0" text="Version" />
+                                        <TableColumn fx:id="pathColumn" prefWidth="75.0" text="Path" visible="false" />
                                     </columns>
                                 </TableView>
                             </children>

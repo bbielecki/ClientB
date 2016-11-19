@@ -12,7 +12,7 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Date;
 
-public class ServerTable implements Serializable {
+public class ServerTable implements Serializable{
     private static final long serialVersionUID = 20120731125400L;
     private final SimpleStringProperty FileName;
     private final SimpleStringProperty lastModified;

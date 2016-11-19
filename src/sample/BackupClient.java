@@ -13,6 +13,8 @@ import java.util.concurrent.TimeUnit;
 public class BackupClient implements Serializable {
 
     public static FileInterface server;
+    public static int numberOfChunks = 0;
+    public static long fileSize = 0;
 
     public BackupClient(String ip){
         super();
@@ -27,15 +29,11 @@ public class BackupClient implements Serializable {
 
     }
 
-    public static FileInterface getServer(){
-        return server;
-    }
-
-    public void getFile(RemoteInputStream rinput){
-        InputStream input = null;
+    public static void getFile(RemoteInputStream rinput, String filename){
+        InputStream input;
         try{
             input = RemoteInputStreamClient.wrap(rinput);
-            saveFile(input);
+            saveFile(input,filename);
         }
 
         catch (Exception e){
@@ -43,11 +41,12 @@ public class BackupClient implements Serializable {
         }
     }
 
-    public static void saveFile(InputStream stream) throws RemoteException, IOException {
+    public static void saveFile(InputStream stream, String filename) throws RemoteException, IOException {
         FileOutputStream output = null;
-
+        File file = null;
+        String extension = filename.substring(filename.lastIndexOf("."),filename.lastIndexOf("-"));
         try {
-            File file = File.createTempFile("dataloool", ".jpg", new File("C:\\Users\\Bartłomiej\\Pictures\\Saved Pictures\\601f4aa3fb0c02e17437e7fd58681c1a.jpg"));
+            file = File.createTempFile("dataloool", ".jpg", new File("C:\\Users\\Bartłomiej\\Pictures\\Saved Pictures\\601f4aa3fb0c02e17437e7fd58681c1a.jpg"));
             output = new FileOutputStream(file);
             int chunk = 4096;
             byte [] result = new byte[chunk];
@@ -58,6 +57,7 @@ public class BackupClient implements Serializable {
                 if (readBytes > 0)
                     output.write(result, 0, readBytes);
                 System.out.println("Zapisuje...");
+                numberOfChunks++;
             } while(readBytes != -1);
             System.out.println(file.length());
             output.flush();
@@ -66,7 +66,14 @@ public class BackupClient implements Serializable {
         } finally{
             if(output != null){
                 output.close();
-                System.out.println("Zamykam strumień klienta...");
+                if(file.renameTo(new File(file.getParent() + "\\" + filename + extension))){
+
+                    System.out.println("Rename succesful");
+                }
+                else{
+                    System.out.println("Rename failed");
+                }
+                System.out.println("Zamykam strumień...");
             }
         }
     }
