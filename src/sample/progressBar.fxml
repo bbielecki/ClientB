@@ -7,9 +7,9 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="144.0" prefWidth="280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.clientScreenController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="144.0" prefWidth="280.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.progressBarController">
    <children>
-      <ProgressBar fx:id="progress" layoutX="33.0" layoutY="61.0" maxHeight="23.0" maxWidth="214.0" prefHeight="23.0" prefWidth="214.0" progress="0.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="33.0" AnchorPane.rightAnchor="33.0" AnchorPane.topAnchor="61.0">
+      <ProgressBar fx:id="prg" layoutX="33.0" layoutY="61.0" maxHeight="23.0" maxWidth="214.0" prefHeight="23.0" prefWidth="214.0" progress="0.0" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="33.0" AnchorPane.rightAnchor="33.0" AnchorPane.topAnchor="61.0">
          <effect>
             <Lighting>
                <bumpInput>
@@ -23,5 +23,6 @@
          <cursor>
             <Cursor fx:constant="NW_RESIZE" />
          </cursor></ProgressBar>
+      <Label fx:id="info_label" layoutX="43.0" layoutY="28.0" prefHeight="17.0" prefWidth="194.0" text="Sending file..." />
    </children>
 </AnchorPane>

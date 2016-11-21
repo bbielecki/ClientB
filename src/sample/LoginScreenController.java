@@ -25,6 +25,9 @@ public class LoginScreenController{
 
 
 
+
+
+
     @FXML
     private void connectButtonAction(ActionEvent event) throws IOException{
         System.out.println("Witam!");
@@ -34,7 +37,8 @@ public class LoginScreenController{
         //TODO poprawna obsługa nawiązywania połączenia z serwerem
         if (port_textfield.getText().equals("1099")){
             try{
-                BackupClient client = new BackupClient(ip_textfield.getText());
+                BackupClient client = new BackupClient(ip_textfield.getText(), port_textfield.getText());
+                //client.getTable(client.getServer().tableStream());
                 clientStage.setTitle("Client");
                 clientStage.setScene(clientScene);
                 clientStage.show();

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.media.*?>
 <?import javafx.scene.text.*?>
@@ -8,81 +9,64 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.clientScreenController">
-    <top>
-        <VBox prefHeight="31.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-            <children>
-                <MenuBar>
-                    <menus>
-                        <Menu fx:id="file_menu" mnemonicParsing="false" text="File">
-                            <items>
-                                <MenuItem fx:id="upload_menuitem" mnemonicParsing="false" onAction="#handleUpload" text="Upload file">
-                                    <graphic>
-                                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                            <image>
-                                                <Image url="@upload.jpg" />
-                                            </image>
-                                        </ImageView>
-                                    </graphic></MenuItem>
-                                <MenuItem fx:id="download_menuitem" mnemonicParsing="false" text="Download file">
-                                    <graphic>
-                                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                                            <image>
-                                                <Image url="@download.png" />
-                                            </image>
-                                        </ImageView>
-                                    </graphic></MenuItem>
-                                <MenuItem fx:id="info_menuitem" mnemonicParsing="false" text="Server info" />
-                                <MenuItem fx:id="periodic" mnemonicParsing="false" onAction="#periodicAction" text="periodic backup" />
-                            </items>
-                        </Menu>
-                        <Menu fx:id="about_menu" mnemonicParsing="false" text="About">
-                            <items>
-                                <MenuItem mnemonicParsing="false" text="Credits" />
-                            </items>
-                        </Menu>
-                        <Menu fx:id="info_menu" mnemonicParsing="false" text="Help">
-                            <items>
-                                <MenuItem mnemonicParsing="false" text="How to...?" />
-                            </items>
-                        </Menu>
-                    </menus>
-                </MenuBar>
-            </children>
-        </VBox>
-    </top>
-    <center>
-        <FlowPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
-            <children>
-                <Label ellipsisString="" prefHeight="75.0" prefWidth="596.0" text="                  Welcome to backuper!" textAlignment="CENTER">
-                    <font>
-                        <Font size="30.0" />
-                    </font>
-                </Label>
-                <Label prefHeight="45.0" prefWidth="598.0" text="                                 Files currently on the server:" textAlignment="CENTER">
-                    <font>
-                        <Font size="19.0" />
-                    </font>
-                </Label>
-                <Button fx:id="get_button" mnemonicParsing="false" onAction="#getButtonAction" text="Get" />
-                <Button fx:id="show_button" mnemonicParsing="false" onAction="#showButtonAction" prefHeight="25.0" prefWidth="67.0" text="Show" />
-                <ScrollPane prefHeight="246.0" prefWidth="593.0">
-                    <content>
-                        <VBox prefHeight="246.0" prefWidth="588.0">
-                            <children>
-                                <TableView fx:id="table" editable="true" prefHeight="249.0" prefWidth="588.0">
-                                    <columns>
-                                        <TableColumn fx:id="filenameColumn" prefWidth="119.0" text="File name" />
-                                        <TableColumn fx:id="lastModifiedColumn" prefWidth="105.0" text="Last modified" />
-                                        <TableColumn fx:id="versionColumn" prefWidth="67.0" text="Version" />
-                                        <TableColumn fx:id="pathColumn" prefWidth="75.0" text="Path" visible="false" />
-                                    </columns>
-                                </TableView>
-                            </children>
-                        </VBox>
-                    </content>
-                </ScrollPane>
-            </children>
-        </FlowPane>
-    </center>
-</BorderPane>
+
+<AnchorPane prefHeight="374.0" prefWidth="634.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.clientScreenController">
+    <children>
+        <Label layoutX="18.0" layoutY="77.0" prefHeight="45.0" prefWidth="598.0" text="                                 Files currently on the server:" textAlignment="CENTER">
+            <font>
+                <Font size="19.0" />
+            </font>
+        </Label>
+        <TableView fx:id="table" editable="true" layoutX="-1.0" layoutY="177.0" prefHeight="217.0" prefWidth="634.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+            <columns>
+                <TableColumn fx:id="filenameColumn" prefWidth="119.0" text="File name" />
+                <TableColumn fx:id="lastModifiedColumn" prefWidth="105.0" text="Last modified" />
+                <TableColumn fx:id="versionColumn" prefWidth="67.0" text="Version" />
+                <TableColumn fx:id="pathColumn" prefWidth="75.0" text="Path" visible="false" />
+            </columns>
+        </TableView>
+        <Label ellipsisString="" layoutX="29.0" layoutY="25.0" prefHeight="52.0" prefWidth="542.0" text="                  Welcome to backuper!" textAlignment="CENTER">
+            <font>
+                <Font size="30.0" />
+            </font>
+        </Label>
+        <MenuBar prefHeight="25.0" prefWidth="596.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+            <menus>
+                <Menu fx:id="file_menu" mnemonicParsing="false" text="File">
+                    <items>
+                        <MenuItem fx:id="upload_menuitem" mnemonicParsing="false" onAction="#handleUpload" text="Upload file">
+                            <graphic>
+                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@upload.jpg" />
+                                    </image>
+                                </ImageView>
+                            </graphic>
+                        </MenuItem>
+                        <MenuItem fx:id="periodic" mnemonicParsing="false" onAction="#periodicAction" text="periodic backup" />
+                    </items>
+                </Menu>
+                <Menu fx:id="about_menu" mnemonicParsing="false" text="About">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Credits" />
+                    </items>
+                </Menu>
+                <Menu fx:id="info_menu" mnemonicParsing="false" text="Help">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="How to...?" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+        <Button fx:id="get_button" layoutX="56.0" layoutY="121.0" mnemonicParsing="false" onAction="#getButtonAction" prefHeight="31.0" prefWidth="90.0" text="Get">
+            <font>
+                <Font size="15.0" />
+            </font>
+        </Button>
+        <Button fx:id="show_button" layoutX="487.0" layoutY="121.0" mnemonicParsing="false" onAction="#showButtonAction" prefHeight="31.0" prefWidth="90.0" text="Show">
+            <font>
+                <Font size="15.0" />
+            </font>
+        </Button>
+    </children>
+</AnchorPane>

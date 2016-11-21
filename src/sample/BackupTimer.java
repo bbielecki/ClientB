@@ -1,19 +1,14 @@
 package sample;
 
-import com.sun.javafx.scene.layout.region.Margins;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 
-import java.io.Console;
 import java.io.File;
 import java.rmi.RemoteException;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by Bartłomiej on 14.11.2016.
- */
 
-//Cala klasa
-   // metoda send przyjmuje inne argumenty niz u ciebie!
 public class BackupTimer implements Runnable{
 
     private long periodicDate;
@@ -35,10 +30,21 @@ public class BackupTimer implements Runnable{
 
                 for(File f : periodFiles) {
                     try {
-                        BackupClient.send(BackupClient.server,f.getPath(),f.getPath(),BackupClient.getFileExtension(f),f.lastModified());
+                        Date dt = new Date(f.lastModified());
+                        if (!(BackupClient.getServer().checkFileOnServer(f.getName(), dt)))
+                            BackupClient.send(BackupClient.server,f.getPath(),f.getName(),BackupClient.getFileExtension(f),f.lastModified());
                     }
                     catch (RemoteException re){
                         re.getMessage();
+                    }
+                    Alert dialog = new Alert(Alert.AlertType.CONFIRMATION, "Confirm", ButtonType.OK, ButtonType.CANCEL);
+                    dialog.setHeaderText("Periodic backup succesful");
+                    dialog.setContentText("File" + f.getName() + " been sent succesfully!");
+                    dialog.setResizable(true);
+                    dialog.getDialogPane().setPrefSize(250, 100);
+                    dialog.showAndWait();
+                    if(dialog.getResult() == ButtonType.OK){
+                        dialog.close();
                     }
                 }
 

@@ -1,32 +1,40 @@
 package sample;
 import java.io.*;
 import java.rmi.*;
+import java.rmi.server.ExportException;
+
 import com.healthmarketscience.rmiio.*;
-//import org.apache.commons.logging.*;
+import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import sample.ClientInterface;
-
-import java.io.File.*;
-import java.util.concurrent.TimeUnit;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.ProgressBar;
+import javafx.stage.Stage;
 
 public class BackupClient implements Serializable {
 
     public static FileInterface server;
-    public static int numberOfChunks = 0;
-    public static long fileSize = 0;
 
-    public BackupClient(String ip){
+    public BackupClient(String ip, String port){
         super();
         try{
-            server = (FileInterface)Naming.lookup("rmi://" + ip + "/BackupServer");
+            server = (FileInterface)Naming.lookup("rmi://" + ip + ":"+ port +"/BackupServer");
             System.err.println("Connected to server: " + ip);
+
         }
         catch (Exception e){
+            System.out.println("Witamasd");
             e.printStackTrace();
         }
 
+        new Scrubwoman();
 
+    }
+
+    public static FileInterface getServer(){
+        return server;
     }
 
     public static void getFile(RemoteInputStream rinput, String filename){
@@ -41,26 +49,26 @@ public class BackupClient implements Serializable {
         }
     }
 
-    public static void saveFile(InputStream stream, String filename) throws RemoteException, IOException {
+    public static void saveFile(InputStream stream, String filename) throws IOException, RemoteException {
         FileOutputStream output = null;
         File file = null;
         String extension = filename.substring(filename.lastIndexOf("."),filename.lastIndexOf("-"));
         try {
-            file = File.createTempFile("dataloool", ".jpg", new File("C:\\Users\\Bartłomiej\\Pictures\\Saved Pictures\\601f4aa3fb0c02e17437e7fd58681c1a.jpg"));
+            file = File.createTempFile(filename, extension, new File("D:\\Client"));
             output = new FileOutputStream(file);
+
             int chunk = 4096;
             byte [] result = new byte[chunk];
-
-            int readBytes = 0;
+            int readBytes;
             do {
                 readBytes = stream.read(result);
-                if (readBytes > 0)
+                if (readBytes > 0){
                     output.write(result, 0, readBytes);
+                }
                 System.out.println("Zapisuje...");
-                numberOfChunks++;
             } while(readBytes != -1);
-            System.out.println(file.length());
             output.flush();
+
         } catch (Exception e) {
             e.printStackTrace();
         } finally{
@@ -79,16 +87,21 @@ public class BackupClient implements Serializable {
     }
 
     public static void send(FileInterface server, String filepath, String filename, String extension, long lastModified) throws RemoteException{
+
         try{
             SimpleRemoteInputStream istream = new SimpleRemoteInputStream(new FileInputStream(filepath));
             server.sendFile(istream.export(), filename, extension, lastModified);
             istream.close();
+
         }
         catch (Exception e){
             e.printStackTrace();
         }
 
     }
+
+
+
 
     public static String getFileExtension(File file) {
         String name = file.getName();
@@ -111,7 +124,6 @@ public class BackupClient implements Serializable {
             String[] srv = (String[]) ob;
             for(int i = 0; i<srv.length; i = i+4){
                 list.addAll(new ServerTable(srv[i],srv[i+1],srv[i+2],srv[i+3]));
-
             }
 
         }
@@ -119,6 +131,23 @@ public class BackupClient implements Serializable {
             System.out.println(e.getMessage() + " Wyjątek");
         }
         return list;
+    }
+
+    public static int getNumberOfChunks(RemoteInputStream ris) throws IOException {
+        InputStream in;
+        ObjectInputStream ois = null;
+        int chunks = 0;
+        try {
+            in = RemoteInputStreamClient.wrap(ris);
+            ois = new ObjectInputStream(in);
+            chunks = ois.readInt();
+            ois.close();
+
+        }
+        catch(Exception e){
+            System.out.println(e.getMessage() + " Wyjątek23");
+        }
+        return chunks;
     }
 
     /*

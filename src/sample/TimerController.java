@@ -16,10 +16,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
-/**
- * Created by Bartłomiej on 15.11.2016.
- */
-
 //cala klasa
 public class TimerController implements Initializable{
 
@@ -37,7 +33,7 @@ public class TimerController implements Initializable{
     }
 
 
-        private long getPeriodTime(){
+    private long getPeriodTime(){
         long time = 0L;
         switch (timeComboBox.getSelectionModel().getSelectedItem().toString()){
             case "half an hour":{
@@ -88,9 +84,9 @@ public class TimerController implements Initializable{
     private void selectFiles(int a){
         Stage selectingFilesStage = new Stage();
         FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
         fileChooser.setTitle("Choose file(s)...");
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home"))
-        );
+
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("All Images", "*.*"),
                 new FileChooser.ExtensionFilter("JPG", "*.jpg"),
