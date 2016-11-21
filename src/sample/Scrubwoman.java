@@ -1,5 +1,8 @@
 package sample;
 
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+
 import java.io.Console;
 import java.io.File;
 import java.io.IOException;
@@ -7,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.rmi.RemoteException;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
 
@@ -17,6 +21,7 @@ public class Scrubwoman {
 
     public Scrubwoman(){
         try(Stream<Path> paths = Files.walk(Paths.get("D:\\Client"))) {
+            List<String> deletedFilesNames = null;
             paths.forEach(filePath -> {
                 if (Files.isRegularFile(filePath)) {
 
@@ -32,8 +37,10 @@ public class Scrubwoman {
                     File f = filePath.toFile();
 
                     try {
-                        if(f.length()!=BackupClient.server.getFileSize(fileName,version))
+                        if(f.length()!=BackupClient.server.getFileSize(fileName,version)) {
                             f.delete();
+                            deletedFilesNames.add(fileName);
+                        }
                         else
                             System.out.println("jest ok");
 
@@ -41,6 +48,18 @@ public class Scrubwoman {
                     } catch (RemoteException e) {
                         e.printStackTrace();
                     }
+                }
+                if(deletedFilesNames!=null) {
+                    Alert dialog = new Alert(Alert.AlertType.ERROR, "Confirm", ButtonType.OK, ButtonType.CANCEL);
+                    dialog.setHeaderText("Files downloading error");
+                    dialog.setContentText("files not properly dowloaded:");
+
+                    for (String n : deletedFilesNames)
+                        dialog.setContentText(n);
+                    
+                    dialog.setResizable(true);
+                    dialog.getDialogPane().setPrefSize(250, 100);
+                    dialog.showAndWait();
                 }
             });
         } catch (IOException e) {
