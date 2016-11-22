@@ -1,4 +1,4 @@
-package sample;
+package sample.Controllers;
 
 import com.healthmarketscience.rmiio.RemoteInputStream;
 import javafx.application.Platform;
@@ -22,6 +22,8 @@ import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.*;
 import org.apache.commons.io.FileUtils;
+import sample.BackupClient;
+import sample.ServerTable;
 
 public class clientScreenController implements Initializable {
     //region COMPONENTS
@@ -233,7 +235,7 @@ public class clientScreenController implements Initializable {
 
     public void createProgressBarWindow() {
         try {
-            Parent timeScreen = FXMLLoader.load(getClass().getResource("progressBar.fxml"));
+            Parent timeScreen = FXMLLoader.load(getClass().getResource("../fxmlFiles/progressBar.fxml"));
             Scene timeScene = new Scene(timeScreen);
             Stage timeStage = new Stage();
             timeStage.setTitle("Upload progress");
@@ -298,7 +300,7 @@ public class clientScreenController implements Initializable {
 
     public void howToAction(ActionEvent event){
         try {
-            Parent howToScreen = FXMLLoader.load(getClass().getResource("howTo.fxml"));
+            Parent howToScreen = FXMLLoader.load(getClass().getResource("../fxmlFiles/howTo.fxml"));
             Scene howToScene = new Scene(howToScreen);
             Stage howToStage = new Stage();
             howToStage.setTitle("User Instruction");
@@ -313,7 +315,7 @@ public class clientScreenController implements Initializable {
 
     public void aboutAction(ActionEvent event){
         try {
-            Parent creditsScreen = FXMLLoader.load(getClass().getResource("credits.fxml"));
+            Parent creditsScreen = FXMLLoader.load(getClass().getResource("../fxmlFiles/credits.fxml"));
             Scene creditsScene = new Scene(creditsScreen);
             Stage creditsStage = new Stage();
             creditsStage.setTitle("Authors");

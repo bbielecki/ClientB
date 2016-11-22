@@ -1,4 +1,4 @@
-package sample;
+package sample.Controllers;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -6,8 +6,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.*;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import javax.swing.*;
-import javafx.event.*;
+import sample.BackupClient;
+
 import java.io.IOException;
 
 public class LoginScreenController{
@@ -27,7 +27,7 @@ public class LoginScreenController{
     @FXML
     private void connectButtonAction(ActionEvent event) throws IOException{
         System.out.println("Witam!");
-        Parent clientScreen = FXMLLoader.load(getClass().getResource("clientScreen.fxml"));
+        Parent clientScreen = FXMLLoader.load(getClass().getResource("../fxmlFiles/clientScreen.fxml"));
         Scene clientScene = new Scene(clientScreen);
         Stage clientStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         clientStage.setOnCloseRequest(e -> Platform.exit());
