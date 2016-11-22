@@ -9,7 +9,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
 <AnchorPane prefHeight="374.0" prefWidth="634.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.clientScreenController">
     <children>
         <Label layoutX="18.0" layoutY="77.0" prefHeight="45.0" prefWidth="598.0" text="                                 Files currently on the server:" textAlignment="CENTER">
@@ -19,9 +18,9 @@
         </Label>
         <TableView fx:id="table" editable="true" layoutX="-1.0" layoutY="177.0" prefHeight="217.0" prefWidth="634.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
             <columns>
-                <TableColumn fx:id="filenameColumn" prefWidth="119.0" text="File name" />
-                <TableColumn fx:id="lastModifiedColumn" prefWidth="105.0" text="Last modified" />
-                <TableColumn fx:id="versionColumn" prefWidth="67.0" text="Version" />
+                <TableColumn fx:id="filenameColumn" prefWidth="121.0" text="File name" />
+                <TableColumn fx:id="lastModifiedColumn" minWidth="0.0" prefWidth="140.0" text="Last modified" />
+                <TableColumn fx:id="versionColumn" prefWidth="50.0" text="Version" />
                 <TableColumn fx:id="pathColumn" prefWidth="75.0" text="Path" visible="false" />
             </columns>
         </TableView>
@@ -43,7 +42,14 @@
                                 </ImageView>
                             </graphic>
                         </MenuItem>
-                        <MenuItem fx:id="periodic" mnemonicParsing="false" onAction="#periodicAction" text="periodic backup" />
+                        <MenuItem fx:id="periodic" mnemonicParsing="false" onAction="#periodicAction" text="Periodic Backup">
+                            <graphic>
+                                <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                                    <image>
+                                        <Image url="@clock.jpg" />
+                                    </image>
+                                </ImageView>
+                            </graphic></MenuItem>
                     </items>
                 </Menu>
                 <Menu fx:id="about_menu" mnemonicParsing="false" text="About">
@@ -64,6 +70,11 @@
             </font>
         </Button>
         <Button fx:id="show_button" layoutX="487.0" layoutY="121.0" mnemonicParsing="false" onAction="#showButtonAction" prefHeight="31.0" prefWidth="90.0" text="Show">
+            <font>
+                <Font size="15.0" />
+            </font>
+        </Button>
+        <Button fx:id="delete_button" layoutX="272.0" layoutY="121.0" mnemonicParsing="false" onAction="#deleteButtonAction" prefHeight="31.0" prefWidth="90.0" text="Delete">
             <font>
                 <Font size="15.0" />
             </font>

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.image.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.effect.*?>
 <?import javafx.scene.text.*?>
@@ -23,6 +24,16 @@
          <cursor>
             <Cursor fx:constant="NW_RESIZE" />
          </cursor></ProgressBar>
-      <Label fx:id="info_label" layoutX="43.0" layoutY="28.0" prefHeight="17.0" prefWidth="194.0" text="Sending file..." />
+      <Label fx:id="info_label" layoutX="23.0" layoutY="22.0" prefHeight="23.0" prefWidth="237.0" text="Sending file..." />
+      <Button fx:id="ok_button" layoutX="195.0" layoutY="97.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="52.0" text="OK" visible="false" />
+      <Label fx:id="sent_label" layoutX="14.0" layoutY="94.0" prefHeight="32.0" prefWidth="152.0" text="  File sent to server!  " visible="false">
+         <graphic>
+            <ImageView fitHeight="25.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@tick.png" />
+               </image>
+            </ImageView>
+         </graphic>
+      </Label>
    </children>
 </AnchorPane>

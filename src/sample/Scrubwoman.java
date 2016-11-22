@@ -3,13 +3,13 @@ package sample;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 
-import java.io.Console;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.rmi.RemoteException;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Stream;
@@ -17,6 +17,7 @@ import java.util.stream.Stream;
 /**
  * Created by Bartłomiej on 21.11.2016.
  */
+
 public class Scrubwoman {
 
     public Scrubwoman(){
@@ -35,14 +36,15 @@ public class Scrubwoman {
                     fileName = fileName + "." + extension;
 
                     File f = filePath.toFile();
+                    Date dt = new Date(f.lastModified());
 
                     try {
-                        if(f.length()!=BackupClient.server.getFileSize(fileName,version)) {
-                            f.delete();
-                            deletedFilesNames.add(fileName);
+                        if(BackupClient.server.checkFileOnServer(fileName, dt)) {
+                            if (f.length() != BackupClient.server.getFileSize(fileName, version)) {
+                                f.delete();
+                                deletedFilesNames.add(fileName);
+                            }
                         }
-                        else
-                            System.out.println("jest ok");
 
                         System.out.println(filePath);
                     } catch (RemoteException e) {
@@ -52,7 +54,7 @@ public class Scrubwoman {
                 if(deletedFilesNames!=null) {
                     Alert dialog = new Alert(Alert.AlertType.ERROR, "Confirm", ButtonType.OK, ButtonType.CANCEL);
                     dialog.setHeaderText("Files downloading error");
-                    dialog.setContentText("files not properly dowloaded:");
+                    dialog.setContentText("Files not properly dowloaded:");
 
                     for (String n : deletedFilesNames)
                         dialog.setContentText(n);

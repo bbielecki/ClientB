@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 public class BackupClient implements Serializable {
 
     public static FileInterface server;
+    public static int clientChunks;
 
     public BackupClient(String ip, String port){
         super();
@@ -28,7 +29,6 @@ public class BackupClient implements Serializable {
             System.out.println("Witamasd");
             e.printStackTrace();
         }
-
         new Scrubwoman();
 
     }
@@ -64,8 +64,8 @@ public class BackupClient implements Serializable {
                 readBytes = stream.read(result);
                 if (readBytes > 0){
                     output.write(result, 0, readBytes);
+                    clientChunks++;
                 }
-                System.out.println("Zapisuje...");
             } while(readBytes != -1);
             output.flush();
 
@@ -148,6 +148,10 @@ public class BackupClient implements Serializable {
             System.out.println(e.getMessage() + " Wyjątek23");
         }
         return chunks;
+    }
+
+    public static void resetClientChunks(){
+        clientChunks = 0;
     }
 
     /*

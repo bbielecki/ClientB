@@ -1,17 +1,12 @@
 package sample;
 
 import com.healthmarketscience.rmiio.RemoteInputStream;
-import com.sun.glass.ui.Window;
-import javafx.animation.Animation;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -25,14 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.rmi.RemoteException;
-import java.sql.Time;
 import java.util.*;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.RunnableFuture;
-
-import javafx.util.Duration;
 import org.apache.commons.io.FileUtils;
 
 public class clientScreenController implements Initializable {
@@ -49,15 +37,22 @@ public class clientScreenController implements Initializable {
     @FXML
     private TableColumn<ServerTable, String> versionColumn;
 
-    @FXML private TableColumn<ServerTable,String> pathColumn;
+    @FXML
+    private TableColumn<ServerTable, String> pathColumn;
 
     @FXML
     private MenuItem upload_menuitem;
 
-    @FXML private MenuItem help_menuitem;
-    @FXML private MenuItem periodic;
-    @FXML private Button show_button;
-    @FXML private Button get_button;
+    @FXML
+    private MenuItem help_menuitem;
+    @FXML
+    private MenuItem periodic;
+    @FXML
+    private Button show_button;
+    @FXML
+    private Button get_button;
+    @FXML
+    private Button delete_button;
 
     @FXML
     private ObservableList<ServerTable> data;
@@ -69,7 +64,6 @@ public class clientScreenController implements Initializable {
     private Menu info_menu;
     private List<File> chosenFiles;
     //endregion
-
 
 
     public void handleUpload(ActionEvent event) throws Exception {
@@ -86,61 +80,56 @@ public class clientScreenController implements Initializable {
                 new FileChooser.ExtensionFilter("PNG", "*.png")
         );
 
+
         chosenFiles = fileChooser.showOpenMultipleDialog(selectingFilesStage);
         System.out.println(chosenFiles);
 
-        try {
-            if (chosenFiles != null) {
-                for (File f : chosenFiles) {
-                    progressBarController.fsize = f.length();
-                    System.out.println(f.getName() + " " + f.lastModified());
-                    Date dt = new Date(f.lastModified());
-                    if (!(BackupClient.getServer().checkFileOnServer(f.getName(), dt))) {
+        progressBarController.SendOrGet = 0;
+        progressBarController.fsize.clear();
+        progressBarController.filename.clear();
+        progressBarController.order = 0;
+        progressBarController.counter = 0;
+
+        for (int i = 0; i < chosenFiles.size(); i++) {
+            progressBarController.fsize.add(chosenFiles.get(i).length());
+            progressBarController.amountOfFiles = chosenFiles.size();
+            progressBarController.filename.add(chosenFiles.get(i).getName());
+        }
+
+
+        if (chosenFiles != null) {
+
+            Thread t = new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    for (File f : chosenFiles) {
+
+                        Date dt = new Date(f.lastModified());
                         try {
-                            createProgressBarWindow();
-                            Runnable task = () -> {
-                                try {
-                                    BackupClient.send(BackupClient.getServer(), f.getPath(), f.getName(), BackupClient.getFileExtension(f), f.lastModified());
-                                } catch (RemoteException e) {
-                                    System.out.println("ADASDW");
-                                    e.printStackTrace();
-                                }
-                            };
-                            new Thread(task).start();
-                        }
-                        catch(Exception e){
-                            System.out.println("Wywaliło mnie");
+                            if (!(BackupClient.getServer().checkFileOnServer(f.getName(), dt))) {
+                                BackupClient.send(BackupClient.getServer(), f.getPath(), f.getName(), BackupClient.getFileExtension(f), f.lastModified());
+                            } else {
+                                Alert dialog = new Alert(Alert.AlertType.INFORMATION, "Confirm", ButtonType.OK, ButtonType.CANCEL);
+                                dialog.setHeaderText("File exists on the server");
+                                dialog.setContentText("File " + f.getName() + " is already on the server!");
+                                dialog.setResizable(true);
+                                dialog.getDialogPane().setPrefSize(250, 100);
+                                dialog.showAndWait();
+                            }
+
+                        } catch (Exception e) {
                             e.getMessage();
                         }
 
-                        finally{
-                            Alert dialog = new Alert(Alert.AlertType.CONFIRMATION, "Confirm", ButtonType.OK, ButtonType.CANCEL);
-                            dialog.setHeaderText("Backup succesful");
-                            dialog.setContentText("File has been sent succesfully!");
-                            dialog.setResizable(true);
-                            dialog.getDialogPane().setPrefSize(250, 100);
-                            dialog.showAndWait();
-                            if(dialog.getResult() == ButtonType.OK){
-                                dialog.close();
-                            }
-                        }
-                    }
-                    else{
-                        Alert dialog = new Alert(Alert.AlertType.INFORMATION,"Confirm", ButtonType.OK, ButtonType.CANCEL);
-                        dialog.setHeaderText("File exists on the server");
-                        dialog.setContentText("File " + f.getName() + " is already on the server!");
-                        dialog.setResizable(true);
-                        dialog.getDialogPane().setPrefSize(250, 100);
-                        dialog.showAndWait();
                     }
                 }
-            }
-        } catch (Exception e) {
-            System.out.println(e.getCause().getMessage());
+            });
+            t.start();
+            createProgressBarWindow();
         }
     }
 
-    public void showButtonAction(ActionEvent event){
+    public void showButtonAction(ActionEvent event) {
         try {
             RemoteInputStream ris = BackupClient.getServer().tableStream();
             data = BackupClient.getTable(ris);
@@ -152,23 +141,52 @@ public class clientScreenController implements Initializable {
     }
 
     public void getButtonAction(ActionEvent event) throws RemoteException, IOException {
-        if(table.getSelectionModel().getSelectedItem() != null){
+        if (table.getSelectionModel().getSelectedItem() != null) {
             String pathToGet = table.getSelectionModel().getSelectedItem().getPath();
             System.out.println(pathToGet);
+            String filenameb = table.getSelectionModel().getSelectedItem().getFileName();
             String filename = table.getSelectionModel().getSelectedItem().getFileName() + "-v" +
                     table.getSelectionModel().getSelectedItem().getVersion();
             System.out.println(filename);
-            try{
-                if(!checkFile(filename)){
-                    BackupClient.getFile(BackupClient.getServer().passAStream(pathToGet),filename);
+            try {
+                if (!checkFile(filename)) {
+                    progressBarController.amountOfFiles = 1;
+                    progressBarController.fsize.clear();
+                    progressBarController.filename.clear();
+                    progressBarController.order = 0;
+                    progressBarController.counter = 0;
+                    progressBarController.SendOrGet = 1;
+
+
+                    progressBarController.filename.add(filenameb);
+                    progressBarController.fsize.add(BackupClient.getServer().getFileSize(filenameb,table.getSelectionModel().getSelectedItem().getVersion()));
+
+
+                    Thread t2 = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            try{
+                                BackupClient.getFile(BackupClient.getServer().passAStream(pathToGet), filename);
+                                Alert dialog = new Alert(Alert.AlertType.CONFIRMATION, "Confirm", ButtonType.OK, ButtonType.CANCEL);
+                                dialog.setHeaderText("File has been downloaded!");
+                                dialog.setContentText("Your file has just been downloaded!");
+                                dialog.setResizable(true);
+                                dialog.getDialogPane().setPrefSize(250, 100);
+                                dialog.showAndWait();
+                            }
+                            catch(Exception e){
+                                e.getMessage();
+                            }
+                        }
+                    });
+                    t2.start();
+                    createProgressBarWindow();
                 }
-            }
-            catch(Exception e){
+            } catch (Exception e) {
                 System.out.println(e.getMessage());
             }
-        }
-        else {
-            Alert dialog = new Alert(Alert.AlertType.INFORMATION,"Confirm", ButtonType.OK, ButtonType.CANCEL);
+        } else {
+            Alert dialog = new Alert(Alert.AlertType.INFORMATION, "Confirm", ButtonType.OK, ButtonType.CANCEL);
             dialog.setHeaderText("No file is selected!");
             dialog.setContentText("Please select the file first and then press GET");
             dialog.setResizable(true);
@@ -177,14 +195,14 @@ public class clientScreenController implements Initializable {
         }
     }
 
-    public boolean checkFile(String fileName){
+    public boolean checkFile(String fileName) {
         File file = new File("D:\\Client");
         boolean isInClient = false;
         Collection<File> files = FileUtils.listFiles(file, null, false);
-        for(File file2 : files){
-            if (file2.getName().substring(0,file2.getName().lastIndexOf(".")).equals(fileName)){
+        for (File file2 : files) {
+            if (file2.getName().substring(0, file2.getName().lastIndexOf(".")).equals(fileName)) {
                 isInClient = true;
-                Alert dialog = new Alert(Alert.AlertType.ERROR,"Confirm", ButtonType.OK, ButtonType.CANCEL);
+                Alert dialog = new Alert(Alert.AlertType.ERROR, "Confirm", ButtonType.OK, ButtonType.CANCEL);
                 dialog.setHeaderText("Retrieving file error");
                 dialog.setContentText("You have the file already!");
                 dialog.setResizable(true);
@@ -196,17 +214,16 @@ public class clientScreenController implements Initializable {
         return isInClient;
     }
 
-    public void periodicAction(ActionEvent event) throws IOException{
+    public void periodicAction(ActionEvent event) throws IOException {
 
         try {
-            Parent timeScreen = FXMLLoader.load(getClass().getResource("timeScreen .fxml"));
+            Parent timeScreen = FXMLLoader.load(getClass().getResource("timeScreen.fxml"));
             Scene timeScene = new Scene(timeScreen);
             Stage timeStage = new Stage();
             timeStage.setTitle("Period Chooser");
             timeStage.setScene(timeScene);
             timeStage.show();
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.getMessage();
         }
 
@@ -214,7 +231,7 @@ public class clientScreenController implements Initializable {
     }
 
 
-    public void createProgressBarWindow(){
+    public void createProgressBarWindow() {
         try {
             Parent timeScreen = FXMLLoader.load(getClass().getResource("progressBar.fxml"));
             Scene timeScene = new Scene(timeScreen);
@@ -223,15 +240,40 @@ public class clientScreenController implements Initializable {
             timeStage.setScene(timeScene);
             timeStage.show();
 
-        }
-        catch (Exception e){
+        } catch (Exception e) {
             e.getMessage();
+        }
+    }
+
+    public void deleteButtonAction(ActionEvent event){
+        if (table.getSelectionModel().getSelectedItem() != null) {
+            try{
+                BackupClient.getServer().deleteFile(table.getSelectionModel().getSelectedItem().getFileName(),table.getSelectionModel().getSelectedItem()
+                        .getVersion(),table.getSelectionModel().getSelectedItem().getPath());
+
+                Alert dialog = new Alert(Alert.AlertType.CONFIRMATION, "Confirm", ButtonType.OK, ButtonType.CANCEL);
+                dialog.setHeaderText("File has been deleted!");
+                dialog.setContentText("Your file has just been deleted!");
+                dialog.setResizable(true);
+                dialog.getDialogPane().setPrefSize(250, 100);
+                dialog.showAndWait();
+            }
+            catch (RemoteException re){
+                re.getMessage();
+            }
+        } else {
+            Alert dialog = new Alert(Alert.AlertType.INFORMATION, "Confirm", ButtonType.OK, ButtonType.CANCEL);
+            dialog.setHeaderText("No file is selected!");
+            dialog.setContentText("Please select the file first and then press DELETE");
+            dialog.setResizable(true);
+            dialog.getDialogPane().setPrefSize(250, 200);
+            dialog.showAndWait();
         }
     }
 
 
     @Override
-    public void initialize(URL location, ResourceBundle resources){
+    public void initialize(URL location, ResourceBundle resources) {
 
         upload_menuitem.setAccelerator(new KeyCodeCombination(KeyCode.U, KeyCombination.CONTROL_DOWN));
         periodic.setAccelerator(new KeyCodeCombination(KeyCode.P, KeyCombination.CONTROL_DOWN));
@@ -252,11 +294,7 @@ public class clientScreenController implements Initializable {
             }
         });
 
-
-
     }
-
-
 
 
 }

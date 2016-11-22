@@ -39,7 +39,7 @@ public class BackupTimer implements Runnable{
                     }
                     Alert dialog = new Alert(Alert.AlertType.CONFIRMATION, "Confirm", ButtonType.OK, ButtonType.CANCEL);
                     dialog.setHeaderText("Periodic backup succesful");
-                    dialog.setContentText("File" + f.getName() + " been sent succesfully!");
+                    dialog.setContentText("File" + f.getName() + "has been sent succesfully!");
                     dialog.setResizable(true);
                     dialog.getDialogPane().setPrefSize(250, 100);
                     dialog.showAndWait();
@@ -51,9 +51,8 @@ public class BackupTimer implements Runnable{
                 periodicDate = date.getTime() + period;
             }
 
-            System.out.println("watek ruszyl");
             try {
-                Thread.sleep(period / 60);
+                Thread.sleep(5000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

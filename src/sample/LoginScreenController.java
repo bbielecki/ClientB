@@ -1,4 +1,5 @@
 package sample;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -23,22 +24,17 @@ public class LoginScreenController{
     @FXML
     private CheckBox default_cbox;
 
-
-
-
-
-
     @FXML
     private void connectButtonAction(ActionEvent event) throws IOException{
         System.out.println("Witam!");
         Parent clientScreen = FXMLLoader.load(getClass().getResource("clientScreen.fxml"));
         Scene clientScene = new Scene(clientScreen);
         Stage clientStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        clientStage.setOnCloseRequest(e -> Platform.exit());
         //TODO poprawna obsługa nawiązywania połączenia z serwerem
-        if (port_textfield.getText().equals("1099")){
+        if (Integer.parseInt(port_textfield.getText()) > 1024 && !ip_textfield.getText().equals("")){
             try{
                 BackupClient client = new BackupClient(ip_textfield.getText(), port_textfield.getText());
-                //client.getTable(client.getServer().tableStream());
                 clientStage.setTitle("Client");
                 clientStage.setScene(clientScene);
                 clientStage.show();
@@ -54,8 +50,6 @@ public class LoginScreenController{
             port_textfield.clear();
             error_connection.setText("Invalid IP or port! Try again.");
         }
-
-
     }
 
     @FXML
