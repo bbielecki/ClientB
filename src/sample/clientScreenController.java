@@ -296,5 +296,34 @@ public class clientScreenController implements Initializable {
 
     }
 
+    public void howToAction(ActionEvent event){
+        try {
+            Parent howToScreen = FXMLLoader.load(getClass().getResource("howTo.fxml"));
+            Scene howToScene = new Scene(howToScreen);
+            Stage howToStage = new Stage();
+            howToStage.setTitle("User Instruction");
+            howToStage.setScene(howToScene);
+            howToStage.show();
+
+        } catch (Exception e) {
+            e.getMessage();
+        }
+
+    }
+
+    public void aboutAction(ActionEvent event){
+        try {
+            Parent creditsScreen = FXMLLoader.load(getClass().getResource("credits.fxml"));
+            Scene creditsScene = new Scene(creditsScreen);
+            Stage creditsStage = new Stage();
+            creditsStage.setTitle("Authors");
+            creditsStage.setScene(creditsScene);
+            creditsStage.show();
+
+        } catch (Exception e) {
+            e.getMessage();
+        }
+    }
+
 
 }

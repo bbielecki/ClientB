@@ -54,12 +54,12 @@
                 </Menu>
                 <Menu fx:id="about_menu" mnemonicParsing="false" text="About">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Credits" />
+                        <MenuItem fx:id="about" mnemonicParsing="false" onAction="#aboutAction" text="Credits" />
                     </items>
                 </Menu>
                 <Menu fx:id="info_menu" mnemonicParsing="false" text="Help">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="How to...?" />
+                        <MenuItem fx:id="howTo" mnemonicParsing="false" onAction="#howToAction" text="How to...?" />
                     </items>
                 </Menu>
             </menus>
