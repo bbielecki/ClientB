@@ -19,4 +19,5 @@ public interface FileInterface extends Remote {
     public RemoteInputStream chunkStream() throws RemoteException, IOException;
     public int getChunk() throws RemoteException;
     public long getFileSize(String fName, String ver) throws RemoteException;
+    public void deleteFile(String fName, String ver, String fPath) throws RemoteException;
 }

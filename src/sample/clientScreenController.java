@@ -199,7 +199,7 @@ public class clientScreenController implements Initializable {
     public void periodicAction(ActionEvent event) throws IOException{
 
         try {
-            Parent timeScreen = FXMLLoader.load(getClass().getResource("timeScreen.fxml"));
+            Parent timeScreen = FXMLLoader.load(getClass().getResource("timeScreen .fxml"));
             Scene timeScene = new Scene(timeScreen);
             Stage timeStage = new Stage();
             timeStage.setTitle("Period Chooser");

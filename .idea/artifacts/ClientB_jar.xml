@@ -1,0 +1,12 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="ClientB:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/ClientB_jar</output-path>
+    <root id="archive" name="ClientB.jar">
+      <element id="module-output" name="ClientB" />
+      <element id="extracted-dir" path="$USER_HOME$/Documents/Studia/OPA/rmiio-2.1.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Documents/Studia/OPA/commons-logging-1.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Documents/Studia/OPA/commons-io-1.3.2.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$USER_HOME$/Documents/Studia/OPA/sqlbuilder-2.1.5.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>

@@ -56,7 +56,7 @@ public class Scrubwoman {
 
                     for (String n : deletedFilesNames)
                         dialog.setContentText(n);
-                    
+
                     dialog.setResizable(true);
                     dialog.getDialogPane().setPrefSize(250, 100);
                     dialog.showAndWait();
